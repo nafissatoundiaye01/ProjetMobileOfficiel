@@ -19,8 +19,8 @@ interface EntrainementsDao {
     suspend fun insertEntrainements(entrainements: Entrainements)
 
     @Update
-    suspend fun updateUser(entrainements: Entrainements)
+    suspend fun updateEntrainements(entrainements: Entrainements)
 
     @Delete
-    suspend fun deleteUser(entrainements: Entrainements)
+    suspend fun deleteEntrainements(entrainements: Entrainements)
 }
