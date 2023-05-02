@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bilan.models.User
+import com.example.bilan.models.UserSession
 import com.example.bilan.viewmodels.BilanViewModel
 
 
@@ -39,7 +40,8 @@ import com.example.bilan.viewmodels.BilanViewModel
 @RequiresApi(Build.VERSION_CODES.M)
 @Composable
 fun MyView() {
-
+    val userSessionClass= UserSession()
+    val userSession:User = userSessionClass.getSession()
     val user1 = User(0,"Nafissatou","NDIAYE","Femme","ventre","perte poids",80.0,1.65,65.0,"nafissatound1@gmail.com","nafi")
     val viewModel = viewModel(BilanViewModel::class.java)
     val state by viewModel.state.collectAsState()
