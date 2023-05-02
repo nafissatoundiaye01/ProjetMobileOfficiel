@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.bilan.interfaces.EntrainementsDao
 import com.example.bilan.interfaces.UserDao
 import com.example.bilan.models.Entrainements
 import com.example.bilan.models.User
@@ -13,6 +14,7 @@ import com.example.bilan.models.User
 @Database(entities = [User::class,Entrainements::class], version = 1, exportSchema = false)
 abstract class FitnessDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
+    abstract  fun entrainementsDao():EntrainementsDao
 
     companion object {
         @Volatile
