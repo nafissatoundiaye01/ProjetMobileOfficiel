@@ -4,6 +4,7 @@ package com.example.bilan.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bilan.models.User
+import com.example.bilan.repositories.EntrainementsRepository
 import com.example.bilan.repositories.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,11 +13,10 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 
-class BilanViewModel(private val userRepo: UserRepository = Graph.userRepo) : ViewModel() {
+class BilanViewModel(private val userRepo: UserRepository = Graph.userRepo,private val entrainementsRepo: EntrainementsRepository =Graph.entrainementsRepo) : ViewModel() {
     private val _state = MutableStateFlow(BilanViewState())
     val state: StateFlow<BilanViewState>
         get() = _state
-
     val userList = userRepo.users
     val selected = MutableStateFlow(_state.value.selected)
 
