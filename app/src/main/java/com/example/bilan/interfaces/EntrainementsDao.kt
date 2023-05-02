@@ -8,18 +8,19 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface EntrainementsDao {
-    @Query("SELECT * FROM Entrainements Where id=:id")
+
+    @Query("SELECT * FROM Entrainements WHERE userId=:id AND strftime('%W', date) = strftime('%W', 'now')")
     fun getAllEntrainementsWeek(id:Int): Flow<List<Entrainements>>
 
-    @Query("SELECT * FROM User WHERE id=:id")
-    suspend fun getUserById(id: Int): User?
+    @Query("SELECT * FROM Entrainements WHERE userId=:id AND strftime('%w', date) = :dayOfWeek")
+    suspend fun getEntrainementsByDate(id: Int, dayOfWeek: String): Entrainements?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertUser(user: User)
+    suspend fun insertEntrainements(entrainements: Entrainements)
 
     @Update
-    suspend fun updateUser(user: User)
+    suspend fun updateUser(entrainements: Entrainements)
 
     @Delete
-    suspend fun deleteUser(user: User)
+    suspend fun deleteUser(entrainements: Entrainements)
 }

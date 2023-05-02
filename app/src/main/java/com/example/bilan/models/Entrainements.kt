@@ -3,6 +3,7 @@ package com.example.bilan.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.time.LocalDate
 
 @Entity(tableName = "entrainements")
 data class Entrainements(
@@ -11,5 +12,6 @@ data class Entrainements(
     val nom: String,
     val duree: Int,
     val calories: Int,
-    val userId: Int
+    val userId: Int,
+    val date: LocalDate
 )
