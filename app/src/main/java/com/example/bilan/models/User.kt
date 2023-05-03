@@ -16,6 +16,7 @@ data class User(
     val poidsDebut: Double,
     val taille:Double,
     val poidsObjectif: Double,
+    val poidsActuel: Double,
     val email: String,
     val password: String
 )

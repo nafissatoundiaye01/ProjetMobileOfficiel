@@ -27,13 +27,13 @@ class EntrainementsRepository(private val entrainementsDao: EntrainementsDao) {
         }
     }
 
-    suspend fun getAllEntrainementsWeek(id:Int): Flow<List<Entrainements>>? {
+    suspend fun getAllEntrainementsWeek(id:Int): List<Entrainements> {
         Dispatchers.IO.apply {
             return entrainementsDao.getAllEntrainementsWeek(id)
         }
     }
 
-    suspend fun getEntrainementsByDate(id: Int, dayOfWeek: String): Entrainements? {
+    suspend fun getEntrainementsByDate(id: Int, dayOfWeek: String): Entrainements{
         Dispatchers.IO.apply {
             return entrainementsDao.getEntrainementsByDate(id, dayOfWeek)
         }

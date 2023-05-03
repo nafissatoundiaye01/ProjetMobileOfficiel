@@ -10,10 +10,10 @@ import kotlinx.coroutines.flow.Flow
 interface EntrainementsDao {
 
     @Query("SELECT * FROM Entrainements WHERE userId=:id AND strftime('%W', date) = strftime('%W', 'now')")
-    fun getAllEntrainementsWeek(id:Int): Flow<List<Entrainements>>
+    fun getAllEntrainementsWeek(id:Int): List<Entrainements>
 
     @Query("SELECT * FROM Entrainements WHERE userId=:id AND strftime('%w', date) = :dayOfWeek")
-    suspend fun getEntrainementsByDate(id: Int, dayOfWeek: String): Entrainements?
+    suspend fun getEntrainementsByDate(id: Int, dayOfWeek: String): Entrainements
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertEntrainements(entrainements: Entrainements)

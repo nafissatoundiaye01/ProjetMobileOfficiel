@@ -31,26 +31,64 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.bilan.maintenance.MiseAJourEntrainements
 import com.example.bilan.models.User
 import com.example.bilan.models.UserSession
 import com.example.bilan.viewmodels.BilanViewModel
+import com.example.bilan.viewmodels.Graph
+import java.time.LocalDate
 
 
 @SuppressLint("SuspiciousIndentation")
-@RequiresApi(Build.VERSION_CODES.M)
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MyView() {
+
+
     val userSessionClass= UserSession()
     val userSession:User = userSessionClass.getSession()
-    val user1 = User(0,"Nafissatou","NDIAYE","Femme","ventre","perte poids",80.0,1.65,65.0,"nafissatound1@gmail.com","nafi")
+    val user1 = User(0,"Nafissatou","NDIAYE","Femme","ventre","perte poids",80.0,1.65,65.0,72.0,"nafissatound1@gmail.com","nafi")
     val viewModel = viewModel(BilanViewModel::class.java)
     val state by viewModel.state.collectAsState()
-    val user:User
-    if(state.usersList.isEmpty()){
-        user=user1
-    }else{
-        user=state.usersList[0]
+    val dateAujourdhui = LocalDate.now()
+    val maj = MiseAJourEntrainements()
+    maj.createWeeklyWorkoutsIfMonday()
+
+
+    //variablesUtiles
+    var dureeSemaine = 0
+    for(element in state.entrainemantsWeekList){
+        dureeSemaine += element.duree
     }
+    var dureeJour=0
+    for(element in state.entrainementsAllDayWeek){
+        if(element.date==dateAujourdhui){
+            dureeJour=element.duree
+        }
+    }
+    var caloriesSemaine = 0.0
+    for(element in state.entrainemantsWeekList){
+        caloriesSemaine += element.calories
+    }
+    var caloriesJour=0.0
+    for(element in state.entrainementsAllDayWeek){
+        if(element.date==dateAujourdhui){
+            caloriesJour = element.calories
+        }
+    }
+    val dureeAllDayWeek = mutableListOf<Int>()
+    for (element in state.entrainementsAllDayWeek) {
+        val duree = element.duree
+        dureeAllDayWeek.add(duree)
+
+    }
+    val calorieAllDayWeek = mutableListOf<Double>()
+    for (element in state.entrainementsAllDayWeek) {
+        val calorie = element.calories
+        calorieAllDayWeek.add(calorie)
+
+    }
+
 
         LazyColumn(
             modifier = Modifier
@@ -88,13 +126,13 @@ fun MyView() {
                                     append("(min)")
                                 }
                                 withStyle(style = SpanStyle(color = Color.LightGray, fontSize = 35.sp,fontWeight = FontWeight.Bold)) {
-                                    append(" \n0")
+                                    append(" \n$dureeJour")
                                 }
                                 withStyle(style = SpanStyle(color = Color.LightGray, fontSize = 16.sp)) {
                                     append("\nTotal \n \nCette Semaine: ")
                                 }
                                 withStyle(style = SpanStyle(color = Color.LightGray, fontSize = 16.sp, fontWeight = FontWeight.Bold)) {
-                                    append(" 0")
+                                    append("$dureeSemaine")
                                 }
 
 
@@ -119,13 +157,13 @@ fun MyView() {
                                     append("(Kcal)")
                                 }
                                 withStyle(style = SpanStyle(color = Color.LightGray, fontSize = 35.sp,fontWeight = FontWeight.Bold)) {
-                                    append(" \n0")
+                                    append(" \n$caloriesJour")
                                 }
                                 withStyle(style = SpanStyle(color = Color.LightGray, fontSize = 16.sp)) {
                                     append("\nTotal \n \nCette Semaine: ")
                                 }
                                 withStyle(style = SpanStyle(color = Color.LightGray, fontSize = 16.sp, fontWeight = FontWeight.Bold)) {
-                                    append(" 0")
+                                    append(" $caloriesSemaine")
                                 }
 
 
@@ -283,14 +321,13 @@ fun MyView() {
                         .padding(16.dp)
                         .offset(10.dp)
                 ){
-                    Text(text = "\u23F0 Entrainements: 0 min", fontWeight = FontWeight.Bold,fontSize=20.sp,color=Color.White)
-                    val maxSteps = 10000f
-                    val stepsPerDay = listOf(2000f, 3500f, 6000f, 8000f, 5000f, 7500f, 9000f)
-                    
+                    Text(text = "\u23F0 Entrainements: $dureeSemaine min", fontWeight = FontWeight.Bold,fontSize=20.sp,color=Color.White)
+                    val maxTime = 180
+
                     Row(modifier=Modifier.height(400.dp)) {
-                        stepsPerDay.forEachIndexed { index, steps ->
+                        dureeAllDayWeek.forEachIndexed { index, time ->
                             Column(
-                              //  horizontalAlignment  = Horizontal ,
+                                //  horizontalAlignment  = Horizontal ,
                                 modifier = Modifier
                                     .height(400.dp)
                                     .width(55.dp)
@@ -303,7 +340,12 @@ fun MyView() {
                                         .padding(horizontal = 4.dp),
                                     contentAlignment = Alignment.BottomCenter
                                 ) {
-                                    Canvas(modifier = Modifier.size(width = 8.dp, height = 100.dp)) {
+                                    Canvas(
+                                        modifier = Modifier.size(
+                                            width = 8.dp,
+                                            height = 100.dp
+                                        )
+                                    ) {
                                         drawRect(
                                             color = Color.Gray,
                                             size = size
@@ -311,7 +353,10 @@ fun MyView() {
 
                                         drawRect(
                                             color = Color.Blue,
-                                            size = Size(size.width, size.height * (steps / maxSteps))
+                                            size = Size(
+                                                size.width,
+                                                size.height * (time / maxTime)
+                                            )
                                         )
                                     }
                                 }
@@ -347,12 +392,11 @@ fun MyView() {
                         .background(Color.DarkGray, RoundedCornerShape(16.dp))
                         .padding(16.dp)
                 ){
-                    Text(text = "\uD83D\uDD25 Calories: 0 Kcal", fontWeight = FontWeight.Bold,fontSize=20.sp,color=Color.White)
-                    val maxSteps = 10000f
-                    val stepsPerDay = listOf(2000f, 3500f, 6000f, 8000f, 5000f, 7500f, 9000f)
+                    Text(text = "\uD83D\uDD25 Calories: $caloriesSemaine Kcal", fontWeight = FontWeight.Bold,fontSize=20.sp,color=Color.White)
+                    val maxSteps = 3000.0
 
                     Row(modifier=Modifier.height(400.dp)) {
-                        stepsPerDay.forEachIndexed { index, steps ->
+                        calorieAllDayWeek.forEachIndexed { index, steps ->
                             Column(
                                 //  horizontalAlignment  = Horizontal ,
                                 modifier = Modifier
@@ -367,7 +411,12 @@ fun MyView() {
                                         .padding(horizontal = 4.dp),
                                     contentAlignment = Alignment.BottomCenter
                                 ) {
-                                    Canvas(modifier = Modifier.size(width = 8.dp, height = 100.dp)) {
+                                    Canvas(
+                                        modifier = Modifier.size(
+                                            width = 8.dp,
+                                            height = 100.dp
+                                        )
+                                    ) {
                                         drawRect(
                                             color = Color.Gray,
                                             size = size
@@ -375,7 +424,10 @@ fun MyView() {
 
                                         drawRect(
                                             color = Color.Blue,
-                                            size = Size(size.width, size.height * (steps / maxSteps))
+                                            size = Size(
+                                                size.width,
+                                                (size.height * (steps / maxSteps)).toFloat()
+                                            )
                                         )
                                     }
                                 }
@@ -412,10 +464,10 @@ fun MyView() {
                         .padding(16.dp)
                 ){
                     Column(){
-                    val poidsD= user.poidsDebut
-                    val poidsO= user.poidsObjectif
-                    val poidsA = 72.0
-                    val perc= ((poidsD-poidsA).toDouble()/(poidsD-poidsO).toDouble())*100
+                    val poidsD= userSession.poidsDebut
+                    val poidsO= userSession.poidsObjectif
+                    val poidsA = userSession.poidsActuel
+                    val perc= (((poidsD-poidsA).toDouble()/(poidsD-poidsO).toDouble())*100).toInt()
                     Text(text = "\uD83C\uDFAF Objectifs", fontWeight = FontWeight.Bold,fontSize=20.sp,color=Color.White)
                     Text("\n Poids Début: $poidsD Kg;\r Poids Objectif: $poidsO Kg",fontSize=15.sp,color=Color.Gray)
                     if((poidsA-poidsO)==0.0) {
@@ -438,17 +490,29 @@ fun MyView() {
 
     }
 
-@RequiresApi(Build.VERSION_CODES.M)
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun StepProgressCircular() {
     var steps by remember { mutableStateOf(0) }
+    val viewModel = viewModel(BilanViewModel::class.java)
+    val state by viewModel.state.collectAsState()
 
+    val dateAujourdhui = LocalDate.now()
+    LaunchedEffect(dateAujourdhui) {
+        state.entrainemantsWeekList.forEach { element ->
+            if(element.date == dateAujourdhui){
+                element.calories = (0.5 + element.calories)
+                viewModel.update(element)
+            }
+        }
+    }
     val sensorListener = object : SensorEventListener {
         override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
 
         override fun onSensorChanged(event: SensorEvent?) {
             if (event?.sensor?.type == Sensor.TYPE_STEP_COUNTER) {
                 steps = event.values[0].toInt()
+
             }
         }
     }
@@ -540,7 +604,7 @@ fun StepProgressCircular() {
 }
 
 
-@RequiresApi(Build.VERSION_CODES.M)
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun MyViewPreview() {

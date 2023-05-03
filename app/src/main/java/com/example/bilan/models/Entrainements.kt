@@ -11,7 +11,7 @@ data class Entrainements(
     val id: Int = 0,
     val nom: String,
     val duree: Int,
-    val calories: Int,
+    var calories: Double,
     val userId: Int,
     val date: LocalDate
 )
