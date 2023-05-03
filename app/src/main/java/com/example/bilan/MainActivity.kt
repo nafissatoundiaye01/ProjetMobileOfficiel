@@ -26,15 +26,7 @@ class MainActivity : ComponentActivity() {
         val navigatorProvider = NavigatorProvider()
 
         setContent {
-            /*val navController= rememberNavController()
-            NavHost(navController, startDestination = "/home") {
-                composable("/home") {
-                    HomeScreen(navController)
-                }
-                composable("/myView") {
-                    MyView()
-                }
-            }*/
+
             Graph.provide(this)
 
 
